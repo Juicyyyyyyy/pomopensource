@@ -17,7 +17,9 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->timestamps();
             $table->string('name', length: 255);
-            $table->unsignedInteger('time_focused')->default(0);
+            $table->unsignedInteger('time_focused_on_tasks')->default(0);
+            $table->unsignedInteger('time_focused_on_project_only')->default(0);
+            $table->unsignedInteger('time_focused_total')->default(0);
         });
     }
 

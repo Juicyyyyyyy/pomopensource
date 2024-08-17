@@ -18,7 +18,8 @@ return new class extends Migration
             $table->timestamps();
             $table->dateTime('started_at');
             $table->dateTime('ended_at');
-            $table->unsignedInteger('duration')->nullable();
+            $table->unsignedInteger('time_focused')->nullable(); // in minutes
+            $table->unsignedInteger('break_time')->nullable(); // in minutes
         });
     }
 

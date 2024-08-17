@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
 {
@@ -16,26 +17,33 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
-        'time_studied'
     ];
 
     /**
      * Get the projects of a user.
      */
-    public function tasks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function getTasks(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Task::class, 'project_id');
     }
 
     /**
-     * Calculate total time studied and update time_studied value.
+     * Get this project owner
      *
-     * @return void
+     * @return BelongsTo
      */
-    public function updateTimeStudied(): void
+    public function owner(): BelongsTo
     {
-        $totalTime = $this->tasks()->sum('time_studied');
-        $this->update(['time_studied' => $totalTime]);
+        return $this->belongsTo(User::class);
+    }
+
+    public function updateTimeFocusedProject()
+    {
+        $tasks = $this->getTasks();
+        // update time_focused_on_tasks
+        $this->update(['time_focused_on_tasks' => $tasks->sum('time_focused')]);
+        // update time_focused_total
+        $this->update(['time_focused_total' => $this->getAttribute('time_focused_on_project_only') + $this->getAttribute('time_focused_on_tasks')]);
     }
 
 
