@@ -1,4 +1,4 @@
-<head>
+<template>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,9 +17,4 @@
         <!-- Styles -->
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    @vite(['resources/js/app.js'])
-</head>
-
-<body class="text-white font-sans antialiased bg-cover bg-center ">
-<div id="app"></div>
-</body>
+</template>

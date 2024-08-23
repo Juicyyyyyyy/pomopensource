@@ -18,6 +18,8 @@ class Project extends Model
     protected $fillable = [
         'name',
     ];
+    private int $time_focused_on_project_only;
+    private int $time_focused_on_tasks;
 
     /**
      * Get the projects of a user.
@@ -37,14 +39,14 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function updateTimeFocusedProject()
+    public function updateTimeFocusedProject(): void
     {
-        $tasks = $this->getTasks();
-        // update time_focused_on_tasks
-        $this->update(['time_focused_on_tasks' => $tasks->sum('time_focused')]);
-        // update time_focused_total
-        $this->update(['time_focused_total' => $this->getAttribute('time_focused_on_project_only') + $this->getAttribute('time_focused_on_tasks')]);
+        $this->update([
+            'time_focused_on_tasks' => $this->getTasks()->sum('time_focused'),
+            'time_focused_total' => $this->time_focused_on_project_only + $this->time_focused_on_tasks,
+        ]);
     }
+
 
 
 }

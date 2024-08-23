@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Stats;
 
 class User extends Authenticatable
 {
@@ -38,7 +39,12 @@ class User extends Authenticatable
      */
     public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Project::class, 'owner_id');
+        return $this->hasMany(Project::class, 'user_id');
+    }
+
+    public function stats(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Stats::class, 'user_id');
     }
 
 
