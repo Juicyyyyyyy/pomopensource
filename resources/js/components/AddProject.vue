@@ -17,21 +17,7 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            projectName: '',
-        };
-    },
-    methods: {
-        addProject() {
-            if (this.projectName) {
-                // Logic to add the project
-                this.projectName = '';
-            }
-        },
-    },
-};
+
 </script>
 
 <style scoped>

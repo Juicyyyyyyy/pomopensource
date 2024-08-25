@@ -1,62 +1,57 @@
 <?php
 
-// ProjectController.php
+// TaskController.php
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class ProjectController extends Controller
+class TaskController extends Controller
 {
-    public function index()
-    {
-        $projects = auth()->user()->projects()->with('tasks')->get();
-        return Inertia::render('Home', ['projects' => $projects]);
-    }
-
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $project = auth()->user()->projects()->create($validated);
+        $project->tasks()->create($validated);
 
         return Inertia::render('Home', [
             'projects' => auth()->user()->projects()->with('tasks')->get(),
             'flash' => [
-                'message' => 'Project created successfully.',
+                'message' => 'Task created successfully.',
                 'type' => 'success',
             ],
         ]);
     }
 
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Task $task)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $project->update($validated);
+        $task->update($validated);
 
         return Inertia::render('Home', [
             'projects' => auth()->user()->projects()->with('tasks')->get(),
             'flash' => [
-                'message' => 'Project updated successfully.',
+                'message' => 'Task updated successfully.',
                 'type' => 'success',
             ],
         ]);
     }
 
-    public function destroy(Project $project)
+    public function destroy(Task $task)
     {
-        $project->delete();
+        $task->delete();
 
         return Inertia::render('Home', [
             'projects' => auth()->user()->projects()->with('tasks')->get(),
             'flash' => [
-                'message' => 'Project deleted successfully.',
+                'message' => 'Task deleted successfully.',
                 'type' => 'success',
             ],
         ]);

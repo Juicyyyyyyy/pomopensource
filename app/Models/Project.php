@@ -17,14 +17,22 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
+        'time_focused_on_project_only',
+        'time_focused_on_tasks',
+        'time_focused_total',
     ];
-    private int $time_focused_on_project_only;
-    private int $time_focused_on_tasks;
+
+    protected $casts = [
+        'time_focused_on_project_only' => 'integer',
+        'time_focused_on_tasks' => 'integer',
+        'time_focused_total' => 'integer',
+    ];
+
 
     /**
      * Get the projects of a user.
      */
-    public function getTasks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function tasks(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Task::class, 'project_id');
     }
@@ -41,10 +49,9 @@ class Project extends Model
 
     public function updateTimeFocusedProject(): void
     {
-        $this->update([
-            'time_focused_on_tasks' => $this->getTasks()->sum('time_focused'),
-            'time_focused_total' => $this->time_focused_on_project_only + $this->time_focused_on_tasks,
-        ]);
+        $this->time_focused_on_tasks = $this->tasks->sum('time_focused');
+        $this->time_focused_total = $this->time_focused_on_project_only + $this->time_focused_on_tasks;
+        $this->save();
     }
 
 

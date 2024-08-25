@@ -9,19 +9,18 @@ class Task extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
+        'time_focused',
+        'project_id',
     ];
 
-    public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    protected $casts = [
+        'time_focused' => 'integer',
+    ];
+
+    public function project()
     {
         return $this->belongsTo(Project::class);
     }
-
-
 }
