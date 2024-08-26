@@ -1,6 +1,5 @@
 <?php
 
-// TaskController.php
 namespace App\Http\Controllers;
 
 use App\Models\Project;
@@ -16,15 +15,16 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $project->tasks()->create($validated);
+        $task = $project->tasks()->create($validated);
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
+                'task' => $task,
                 'message' => 'Task created successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 
     public function update(Request $request, Task $task)
@@ -35,25 +35,30 @@ class TaskController extends Controller
 
         $task->update($validated);
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
+                'task' => $task->fresh(),
                 'message' => 'Task updated successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 
-    public function destroy(Task $task)
+    public function destroy(Request $request, Task $task)
     {
+        $taskId = $task->id;
+        $projectId = $task->project_id;
         $task->delete();
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
+                'taskId' => $taskId,
+                'projectId' => $projectId,
                 'message' => 'Task deleted successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 }

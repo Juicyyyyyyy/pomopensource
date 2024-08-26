@@ -1,6 +1,5 @@
 <?php
 
-// ProjectController.php
 namespace App\Http\Controllers;
 
 use App\Models\Project;
@@ -12,7 +11,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = auth()->user()->projects()->with('tasks')->get();
-        return Inertia::render('Home', ['projects' => $projects]);
+        return Inertia::render('App', ['projects' => $projects]);
     }
 
     public function store(Request $request)
@@ -23,13 +22,14 @@ class ProjectController extends Controller
 
         $project = auth()->user()->projects()->create($validated);
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
+                'project' => $project->load('tasks'),
                 'message' => 'Project created successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 
     public function update(Request $request, Project $project)
@@ -40,25 +40,26 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
+                'project' => $project->fresh()->load('tasks'),
                 'message' => 'Project updated successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 
-    public function destroy(Project $project)
+    public function destroy(Request $request, Project $project)
     {
         $project->delete();
 
-        return Inertia::render('Home', [
-            'projects' => auth()->user()->projects()->with('tasks')->get(),
-            'flash' => [
+        if ($request->wantsJson()) {
+            return response()->json([
                 'message' => 'Project deleted successfully.',
-                'type' => 'success',
-            ],
-        ]);
+            ]);
+        }
+
+        return redirect()->route('projects.index');
     }
 }

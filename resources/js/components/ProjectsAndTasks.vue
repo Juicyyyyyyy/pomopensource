@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import {ref, reactive, computed} from 'vue'
 import { Inertia } from '@inertiajs/inertia'
 
 export default {
@@ -72,40 +72,45 @@ export default {
         }
     },
     setup(props) {
-        const localProjects = ref(props.projects)
+        const localProjects = ref(computed(() => props.projects))
         const newProjectName = ref('')
         const newTaskNames = reactive({})
 
         const addProject = () => {
             if (newProjectName.value.trim()) {
-                const newProject = {
-                    id: Date.now(), // Temporary ID
-                    name: newProjectName.value,
-                    tasks: []
-                }
-                localProjects.value.push(newProject)
                 Inertia.post('/projects', { name: newProjectName.value }, {
-                    preserveState: true,
                     preserveScroll: true,
-                })
-                newProjectName.value = ''
+                    onSuccess: () => {
+                        Inertia.reload({ only: ['projects'] });
+                    },
+                    onError: (errors) => {
+                        console.error(errors);
+                    }
+                });
+                newProjectName.value = '';
             }
         }
 
+
         const updateProject = (project) => {
             Inertia.patch(`/projects/${project.id}`, { name: project.name }, {
-                preserveState: true,
                 preserveScroll: true,
-            })
+                onSuccess: () => {
+                    Inertia.reload({ only: ['projects'] });
+                }
+            });
         }
 
+
         const deleteProject = (projectId) => {
-            localProjects.value = localProjects.value.filter(p => p.id !== projectId)
             Inertia.delete(`/projects/${projectId}`, {
-                preserveState: true,
                 preserveScroll: true,
-            })
+                onSuccess: () => {
+                    Inertia.reload({ only: ['projects'] });
+                }
+            });
         }
+
 
         const toggleTasksVisibility = (project) => {
             project.showTasks = !project.showTasks
@@ -113,34 +118,37 @@ export default {
 
         const addTask = (project) => {
             if (newTaskNames[project.id]?.trim()) {
-                const newTask = {
-                    id: Date.now(), // Temporary ID
-                    name: newTaskNames[project.id],
-                    project_id: project.id
-                }
-                project.tasks.push(newTask)
                 Inertia.post(`/projects/${project.id}/tasks`, { name: newTaskNames[project.id] }, {
-                    preserveState: true,
                     preserveScroll: true,
-                })
-                newTaskNames[project.id] = ''
+                    onSuccess: () => {
+                        Inertia.reload({ only: ['projects'] });
+                    }
+                });
+                newTaskNames[project.id] = '';
             }
         }
 
+
+
         const updateTask = (project, task) => {
             Inertia.patch(`/tasks/${task.id}`, { name: task.name }, {
-                preserveState: true,
                 preserveScroll: true,
-            })
+                onSuccess: () => {
+                    Inertia.reload({ only: ['projects'] });
+                }
+            });
         }
 
+
         const deleteTask = (project, taskId) => {
-            project.tasks = project.tasks.filter(t => t.id !== taskId)
             Inertia.delete(`/tasks/${taskId}`, {
-                preserveState: true,
                 preserveScroll: true,
-            })
+                onSuccess: () => {
+                    Inertia.reload({ only: ['projects'] });
+                }
+            });
         }
+
 
         return {
             localProjects,
