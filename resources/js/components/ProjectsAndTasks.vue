@@ -67,6 +67,7 @@
 import {ref, reactive, computed} from 'vue'
 import { Inertia } from '@inertiajs/inertia'
 import Timer from "./Timer.vue";
+import {router} from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -85,11 +86,10 @@ export default {
 
         const addProject = () => {
             if (newProjectName.value.trim()) {
-                Inertia.post('/projects', { name: newProjectName.value }, {
+                router.reload({
+                    method: 'post',
+                    data: { name: newProjectName.value },
                     preserveScroll: true,
-                    onSuccess: () => {
-                        Inertia.reload({ only: ['projects'] });
-                    },
                     onError: (errors) => {
                         console.error(errors);
                     }
@@ -100,22 +100,27 @@ export default {
 
 
         const updateProject = (project) => {
-            Inertia.patch(`/projects/${project.id}`, { name: project.name }, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    Inertia.reload({ only: ['projects'] });
-                }
-            });
+                router.visit(`/projects/${project.id}`, {
+                    method: 'patch',
+                    data: { name: project.name },
+                    preserveScroll: true,
+                    onError: (errors) => {
+                        console.error(errors);
+                    }
+                });
         }
 
 
         const deleteProject = (projectId) => {
-            Inertia.delete(`/projects/${projectId}`, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    Inertia.reload({ only: ['projects'] });
-                }
-            });
+            if (confirm('Are you sure you want to delete this project?')) {
+                router.visit(`/projects/${projectId}`, {
+                    method: 'delete',
+                    preserveScroll: true,
+                    onError: (errors) => {
+                        console.error(errors);
+                    }
+                });
+            }
         }
 
 
@@ -124,11 +129,14 @@ export default {
         }
 
         const addTask = (project) => {
-            if (newTaskNames[project.id]?.trim()) {
-                Inertia.post(`/projects/${project.id}/tasks`, { name: newTaskNames[project.id] }, {
+            const taskName = newTaskNames[project.id]?.trim();
+            if (taskName) {
+                router.visit(`/projects/${project.id}/tasks`, {
+                    method: 'post',
+                    data: { name: taskName },
                     preserveScroll: true,
-                    onSuccess: () => {
-                        Inertia.reload({ only: ['projects'] });
+                    onError: (errors) => {
+                        console.error(errors);
                     }
                 });
                 newTaskNames[project.id] = '';
@@ -137,23 +145,24 @@ export default {
 
 
 
+
         const updateTask = (project, task) => {
             Inertia.patch(`/tasks/${task.id}`, { name: task.name }, {
                 preserveScroll: true,
-                onSuccess: () => {
-                    Inertia.reload({ only: ['projects'] });
-                }
             });
         }
 
 
         const deleteTask = (project, taskId) => {
-            Inertia.delete(`/tasks/${taskId}`, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    Inertia.reload({ only: ['projects'] });
-                }
-            });
+            if (confirm('Are you sure you want to delete this task?')) {
+                router.visit(`/tasks/${taskId}`, {
+                    method: 'delete',
+                    preserveScroll: true,
+                    onError: (errors) => {
+                        console.error(errors);
+                    }
+                });
+            }
         }
 
 

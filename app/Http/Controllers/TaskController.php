@@ -16,15 +16,6 @@ class TaskController extends Controller
         ]);
 
         $task = $project->tasks()->create($validated);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'task' => $task,
-                'message' => 'Task created successfully.',
-            ]);
-        }
-
-        return redirect()->route('projects.index');
     }
 
     public function update(Request $request, Task $task)
@@ -34,15 +25,6 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'task' => $task->fresh(),
-                'message' => 'Task updated successfully.',
-            ]);
-        }
-
-        return redirect()->route('projects.index');
     }
 
     public function destroy(Request $request, Task $task)
@@ -50,15 +32,5 @@ class TaskController extends Controller
         $taskId = $task->id;
         $projectId = $task->project_id;
         $task->delete();
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'taskId' => $taskId,
-                'projectId' => $projectId,
-                'message' => 'Task deleted successfully.',
-            ]);
-        }
-
-        return redirect()->route('projects.index');
     }
 }
