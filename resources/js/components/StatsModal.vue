@@ -1,13 +1,13 @@
 <template>
     <div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-        <div class="w-full max-w-2xl p-6 bg-white/10 backdrop-blur-lg rounded-lg shadow-xl transform transition-all duration-300 ease-in-out">
+        <div class="modal-content w-full max-w-2xl p-6 bg-white/10 backdrop-blur-lg rounded-lg shadow-xl transform transition-all duration-300 ease-in-out">
             <div class="flex justify-between items-center pb-4 border-b border-white/20">
                 <h2 class="text-2xl font-bold font-oswald text-white">Report</h2>
                 <button @click="$emit('close')" class="text-white hover:text-gray-300 transition duration-150 ease-in-out">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="pt-6">
+            <div class="modal-body pt-6 overflow-y-auto">
                 <div class="flex space-x-2 mb-6">
                     <button
                         v-for="tab in ['Summary', 'Detail', 'Ranking']"
@@ -22,6 +22,9 @@
 
                 <h3 class="text-lg font-semibold font-oswald text-white mb-4">Activity Summary</h3>
                 <ActivitySummary :stats="stats" />
+
+                <h3 class="text-lg font-semibold font-oswald text-white mt-8 mb-4">Monthly Activity</h3>
+                <Calendar />
             </div>
         </div>
     </div>
@@ -32,10 +35,12 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import ActivitySummary from './ActivitySummary.vue';
+import Calendar from './Calendar.vue';
 
 export default {
     components: {
         ActivitySummary,
+        Calendar,
     },
     emits: ['close'],
     setup() {
@@ -66,5 +71,26 @@ export default {
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+.modal-content {
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.modal-body {
+    max-height: calc(90vh - 5rem);
+    overflow-y: auto;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
 </style>

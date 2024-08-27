@@ -83,14 +83,75 @@ class UserStatsController extends Controller
         // If last session was yesterday, keep the current streak
     }
 
-    public function getMonthlyCalendar(Request $request, $year, $month)
+    public function getCalendarData(Request $request, $year, $month = null, $day = null)
     {
         $user = $request->user();
         $stats = $this->updateStats($user);
+        $view = $request->query('view', 'month');
 
+        switch ($view) {
+            case 'week':
+                return $this->getWeekCalendarData($user, $year, $month, $day, $stats);
+            case 'month':
+                return $this->getMonthCalendarData($user, $year, $month, $stats);
+            case 'year':
+                return $this->getYearCalendarData($user, $year, $stats);
+            default:
+                return response()->json(['error' => 'Invalid view'], 400);
+        }
+    }
+
+    private function getWeekCalendarData($user, $year, $month, $day, $stats)
+    {
+        $startDate = Carbon::create($year, $month, $day)->startOfWeek();
+        $endDate = $startDate->copy()->endOfWeek();
+
+        return $this->getCalendarDataForDateRange($user, $startDate, $endDate, $stats);
+    }
+
+    private function getMonthCalendarData($user, $year, $month, $stats)
+    {
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 
+        return $this->getCalendarDataForDateRange($user, $startDate, $endDate, $stats);
+    }
+
+    private function getYearCalendarData($user, $year, $stats)
+    {
+        $startDate = Carbon::create($year, 1, 1)->startOfYear();
+        $endDate = $startDate->copy()->endOfYear();
+
+        $focusedSessions = $user->focusedSessions()
+            ->whereBetween('started_at', [$startDate, $endDate])
+            ->get()
+            ->groupBy(function ($session) {
+                return $session->started_at->format('Y-m');
+            });
+
+        $calendar = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $date = Carbon::create($year, $month, 1);
+            $monthKey = $date->format('Y-m');
+            $sessions = $focusedSessions->get($monthKey, collect());
+
+            $calendar[] = [
+                'date' => $monthKey,
+                'has_session' => $sessions->isNotEmpty(),
+                'minutes_focused' => $sessions->sum('minute_focused'),
+            ];
+        }
+
+        return response()->json([
+            'calendar' => $calendar,
+            'currentStreak' => $stats->day_streak,
+            'initialYear' => (int)$year,
+        ]);
+    }
+
+    private function getCalendarDataForDateRange($user, $startDate, $endDate, $stats)
+    {
         $focusedSessions = $user->focusedSessions()
             ->whereBetween('started_at', [$startDate, $endDate])
             ->get()
@@ -114,8 +175,9 @@ class UserStatsController extends Controller
         return response()->json([
             'calendar' => $calendar,
             'currentStreak' => $stats->day_streak,
-            'initialYear' => (int)$year,
-            'initialMonth' => (int)$month,
+            'initialYear' => (int)$startDate->year,
+            'initialMonth' => (int)$startDate->month,
+            'initialDay' => (int)$startDate->day,
         ]);
     }
 }

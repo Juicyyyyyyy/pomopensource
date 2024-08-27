@@ -16,7 +16,7 @@ import Header from '../components/Header.vue';
 import Timer from '../components/Timer.vue';
 import Footer from '../components/Footer.vue';
 import ProjectsAndTasks from '../components/ProjectsAndTasks.vue';
-import Calendar from "../components/FocusCalendar.vue";
+import Calendar from "../components/Calendar.vue";
 import StatsModal from '../components/StatsModal.vue';
 
 export default {
