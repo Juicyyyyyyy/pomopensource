@@ -5,7 +5,7 @@
             <h1 class="text-xl font-oswald font-bold">Pomopensource</h1>
         </div>
         <div class="flex space-x-3">
-            <button class="flex items-center space-x-1 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20">
+            <button @click="$emit('toggleStats')" class="flex items-center space-x-1 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20">
                 <i class="fa-solid fa-chart-simple"></i>
                 <span class="text-sm font-inter">Stats</span>
             </button>
@@ -24,6 +24,7 @@
 <script>
 export default {
     name: 'Header',
+    emits: ['toggleStats'],
 };
 </script>
 

@@ -33,11 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/focused-sessions/current', [FocusedSessionController::class, 'update'])->name('focused-sessions.update');
     Route::get('/focused-sessions', [FocusedSessionController::class, 'index'])->name('focused-sessions.index');
 
-    // Routes for calendar
-    //Route::get('/user-stats/calendar/{year}/{month}', [UserStatsController::class, 'getMonthlyCalendar'])
-    //    ->name('user-stats.calendar');
-    //Route::get('/user-stats', [UserStatsController::class, 'index'])
-    //    ->name('user-stats.index');
+    // Routes for User Stats
+    Route::get('/user-stats', [UserStatsController::class, 'index'])->name('user-stats.index');
+    Route::get('/user-stats/calendar/{year}/{month}', [UserStatsController::class, 'getMonthlyCalendar'])->name('user-stats.calendar');
+
+
 });
 
 require __DIR__.'/auth.php';

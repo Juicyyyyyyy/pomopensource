@@ -28,9 +28,10 @@
             </button>
         </div>
 
-        <div v-if="!isRunning && currentTimerType === 'pomodoro'" class="mb-4">
-            <select v-model="selectedTaskId" class="bg-white text-gray-800 rounded-lg p-2 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="">No specific task (General focus)</option>
+        <div v-if="!isRunning && currentTimerType === 'pomodoro'" class="mb-4" id="task-dropdown">
+            <select v-model="selectedTaskId"
+                    class="bg-gray-100 text-gray-800 rounded-lg p-3 border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none hover:bg-gray-200 transition duration-150 ease-in-out">
+                <option value="" class="text-gray-600">No specific task (General focus)</option>
                 <template v-for="project in projects" :key="project.id">
                     <option v-for="task in project.tasks" :key="task.id" :value="task.id">
                         {{ project.name }} - {{ task.name }}
@@ -38,6 +39,7 @@
                 </template>
             </select>
         </div>
+
     </div>
 </template>
 

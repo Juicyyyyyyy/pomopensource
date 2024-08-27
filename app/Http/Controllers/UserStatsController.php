@@ -4,15 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\User;
+use App\Models\Stats;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Stats;
 use Inertia\Inertia;
 
 class UserStatsController extends Controller
 {
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $stats = $this->updateStats($user);
 
-    public function updateStats(User $user): void
+        return response()->json([
+            'stats' => [
+                'hours_focused' => round($stats->minute_focused / 60, 1),
+                'days_accessed' => $stats->days_accessed,
+                'day_streak' => $stats->day_streak,
+            ],
+        ]);
+    }
+
+    public function updateStats(User $user)
     {
         $stats = $user->stats ?? new Stats(['user_id' => $user->id]);
 
@@ -30,14 +43,10 @@ class UserStatsController extends Controller
         $this->updateDayStreak($user, $stats);
 
         $stats->save();
+
+        return $stats;
     }
 
-    /**
-     * Calculate total time studied and update time_studied value.
-     *
-     * @param Request $request
-     * @return void
-     */
     public function updateTimeFocused(User $user, Stats $stats): void
     {
         $totalMinutesFocused = $user->focusedSessions()->sum('minute_focused');
@@ -74,8 +83,11 @@ class UserStatsController extends Controller
         // If last session was yesterday, keep the current streak
     }
 
-    public function getMonthlyCalendar(User $user, $year, $month)
+    public function getMonthlyCalendar(Request $request, $year, $month)
     {
+        $user = $request->user();
+        $stats = $this->updateStats($user);
+
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 
@@ -99,16 +111,11 @@ class UserStatsController extends Controller
             ];
         }
 
-        //return response()->json([
-        //    'calendar' => $calendar,
-        //    'current_streak' => $user->stats->day_streak,
-        //]);
-        return Inertia::render('Calendar', [
+        return response()->json([
             'calendar' => $calendar,
-            'currentStreak' => $user->stats->day_streak,
+            'currentStreak' => $stats->day_streak,
             'initialYear' => (int)$year,
             'initialMonth' => (int)$month,
         ]);
     }
-
 }

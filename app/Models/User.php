@@ -39,17 +39,17 @@ class User extends Authenticatable
      */
     public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Project::class, 'user_id');
+        return $this->hasMany(Project::class);
     }
 
     public function focusedSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(FocusedSession::class, 'user_id');
+        return $this->hasMany(FocusedSession::class);
     }
 
     public function stats(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Stats::class, 'user_id');
+        return $this->hasOne(Stats::class);
     }
 
 
