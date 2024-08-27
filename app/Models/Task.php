@@ -11,16 +11,27 @@ class Task extends Model
 
     protected $fillable = [
         'name',
-        'time_focused',
+        'minute_focused',
         'project_id',
     ];
 
     protected $casts = [
-        'time_focused' => 'integer',
+        'minute_focused' => 'integer',
     ];
 
-    public function project()
+    public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function focusedSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(FocusedSession::class);
+    }
+
+    public function updateTimeFocused(): void
+    {
+        $this->minute_focused = $this->focusedSessions()->sum('minute_focused');
+        $this->save();
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,10 +16,11 @@ return new class extends Migration
         Schema::create('focused_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Task::class)->nullable();;
             $table->timestamps();
             $table->dateTime('started_at');
-            $table->dateTime('ended_at');
-            $table->unsignedInteger('time_focused')->nullable(); // in minutes
+            $table->dateTime('ended_at')->nullable();
+            $table->unsignedInteger('minute_focused')->default(0); // in minutes
             $table->unsignedInteger('break_time')->nullable(); // in minutes
         });
     }

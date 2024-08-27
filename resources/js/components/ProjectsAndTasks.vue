@@ -1,4 +1,5 @@
 <template>
+    <Timer :projects="localProjects" />
     <div class="w-full max-w-3xl py-8 px-6 bg-white/10 rounded-lg shadow-lg">
         <h2 class="text-3xl font-bold mb-6 font-oswald text-white">Projects and Tasks</h2>
 
@@ -57,14 +58,20 @@
                 </li>
             </ul>
         </div>
+
     </div>
+
 </template>
 
 <script>
 import {ref, reactive, computed} from 'vue'
 import { Inertia } from '@inertiajs/inertia'
+import Timer from "./Timer.vue";
 
 export default {
+    components: {
+        Timer
+    },
     props: {
         projects: {
             type: Array,

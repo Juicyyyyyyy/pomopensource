@@ -10,15 +10,21 @@ class Stats extends Model
 {
     use HasFactory;
 
-    public function calculateAndUpdateTimeFocused($id)
+    protected $fillable = [
+        'user_id',
+        'minute_focused',
+        'days_accessed',
+        'day_streak',
+    ];
+
+    protected $casts = [
+        'minute_focused' => 'integer',
+        'days_accessed' => 'integer',
+        'day_streak' => 'integer',
+    ];
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        $user = User::find($id);
-
-        if ($user) { // Check if the user exists
-            //$user->
-            $totalTimeFocused = $user->projects()->sum('time_focused_total');
-            $user->update(['time_focused' => $totalTimeFocused]);
-        }
+        return $this->belongsTo(User::class);
     }
-
 }

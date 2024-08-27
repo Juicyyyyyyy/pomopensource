@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->timestamps();
-            $table->float('time_focused')->default(0.0); // in minutes
+            $table->float('minute_focused')->default(0.0); // in minutes
             $table->unsignedInteger('days_accessed')->default(0);
             $table->unsignedInteger('day_streak')->default(0);
         });

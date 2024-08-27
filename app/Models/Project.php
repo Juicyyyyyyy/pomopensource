@@ -17,15 +17,11 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
-        'time_focused_on_project_only',
-        'time_focused_on_tasks',
-        'time_focused_total',
+        'minute_focused',
     ];
 
     protected $casts = [
-        'time_focused_on_project_only' => 'integer',
-        'time_focused_on_tasks' => 'integer',
-        'time_focused_total' => 'integer',
+        'minute_focused' => 'integer',
     ];
 
 
@@ -49,8 +45,7 @@ class Project extends Model
 
     public function updateTimeFocusedProject(): void
     {
-        $this->time_focused_on_tasks = $this->tasks->sum('time_focused');
-        $this->time_focused_total = $this->time_focused_on_project_only + $this->time_focused_on_tasks;
+        $this->minute_focused= $this->tasks->sum('minute_focused');
         $this->save();
     }
 

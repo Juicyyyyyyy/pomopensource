@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->hasMany(Project::class, 'user_id');
     }
 
+    public function focusedSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(FocusedSession::class, 'user_id');
+    }
+
     public function stats(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Stats::class, 'user_id');
