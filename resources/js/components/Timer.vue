@@ -28,18 +28,23 @@
             </button>
         </div>
 
+        <!-- Dropdown for project and task selection -->
         <div v-if="!isRunning && currentTimerType === 'pomodoro'" class="mb-4" id="task-dropdown">
-            <select v-model="selectedTaskId"
+            <select v-model="selectedId"
                     class="bg-gray-100 text-gray-800 rounded-lg p-3 border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none hover:bg-gray-200 transition duration-150 ease-in-out">
-                <option value="" class="text-gray-600">No specific task (General focus)</option>
+                <option value="" class="text-gray-600">No specific project (General focus)</option>
                 <template v-for="project in projects" :key="project.id">
-                    <option v-for="task in project.tasks" :key="task.id" :value="task.id">
-                        {{ project.name }} - {{ task.name }}
+                    <option :value="'project_rbNiqBehszLPVzMmR_' + project.id" class="font-bold">
+                        {{ project.name }} (Project)
                     </option>
+                    <template v-for="task in project.tasks" :key="task.id">
+                        <option :value="'task_rbNiqBehszLPVzMmR_' + task.id">
+                            - {{ task.name }}
+                        </option>
+                    </template>
                 </template>
             </select>
         </div>
-
     </div>
 </template>
 
@@ -60,6 +65,7 @@ export default {
         const isRunning = ref(false);
         const timerInterval = ref(null);
         const selectedTaskId = ref('');
+        const selectedId = ref('')
         const sessionStartTime = ref(null);
         const currentTimerType = ref('pomodoro');
 
@@ -101,12 +107,25 @@ export default {
 
             // Start the focused session only for pomodoro timer
             if (currentTimerType.value === 'pomodoro') {
-                Inertia.post('/focused-sessions', {
-                    task_id: selectedTaskId.value || null,
-                    started_at: sessionStartTime.value,
-                }, {
-                    preserveState: true,
-                });
+                if (selectedId.value) {
+                    const selected = selectedId.value;
+                    Inertia.post('/focused-sessions', {
+                        project_id: selected.startsWith('project_rbNiqBehszLPVzMmR_') ? parseInt(selected.split('_')[1]) : null,
+                        task_id: selected.startsWith('task_rbNiqBehszLPVzMmR_') ? parseInt(selected.split('_')[1]) : null,
+                        started_at: sessionStartTime.value,
+                    }, {
+                        preserveState: true,
+                    });
+                } else {
+                    // If no task or project is selected
+                    Inertia.post('/focused-sessions', {
+                        project_id: null,
+                        task_id: null,
+                        started_at: sessionStartTime.value,
+                    }, {
+                        preserveState: true,
+                    });
+                }
             }
         };
 
@@ -140,6 +159,7 @@ export default {
             isRunning,
             formattedTime,
             selectedTaskId,
+            selectedId,
             currentTimerType,
             setTimer,
             toggleTimer,

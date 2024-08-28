@@ -1,13 +1,10 @@
 <template>
     <Timer :projects="localProjects" />
     <div class="w-full max-w-3xl py-8 px-6 bg-white/10 rounded-lg shadow-lg">
-        <h2 class="text-3xl font-bold mb-6 font-oswald text-white">Projects and Tasks</h2>
+        <h2 class="text-3xl font-bold mb-6 font-oswald text-white">Projects</h2>
 
         <!-- Projects Section -->
         <div class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-semibold font-oswald text-white">Projects</h3>
-            </div>
             <form @submit.prevent="addProject" class="mb-6">
                 <div class="mb-4">
                     <input v-model="newProjectName" type="text" placeholder="New project name" required
@@ -25,7 +22,7 @@
                                class="bg-transparent border-b border-white/30 py-1 px-2 text-white font-inter font-semibold focus:outline-none focus:border-white">
                         <div class="flex space-x-2">
                             <button @click="toggleTasksVisibility(project)" class="text-white hover:text-gray-300 transition">
-                                {{ project.showTasks ? 'Hide Tasks' : 'Show Tasks' }}
+                                {{ project.showTasks ? 'Hide Subprojects' : 'Show Subprojects' }}
                             </button>
                             <button @click="deleteProject(project.id)" class="text-red-400 hover:text-red-600 transition">
                                 <i class="fas fa-trash"></i>
@@ -37,11 +34,11 @@
                     <div v-if="project.showTasks" class="mt-4">
                         <form @submit.prevent="addTask(project)" class="mb-4">
                             <div class="flex">
-                                <input v-model="newTaskNames[project.id]" type="text" placeholder="New task name" required
+                                <input v-model="newTaskNames[project.id]" type="text" placeholder="New Subproject name" required
                                        class="flex-grow py-2 px-3 bg-white/10 border border-white/30 rounded-l-lg text-sm font-inter font-semibold text-white placeholder-white/70 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition duration-200">
                                 <button type="submit"
                                         class="py-2 px-4 bg-white/20 border border-white/30 rounded-r-lg text-sm font-inter font-semibold text-white hover:bg-white/30 transition duration-200">
-                                    Add Task
+                                    Add Subproject
                                 </button>
                             </div>
                         </form>
