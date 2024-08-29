@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Routes for User Settings
     Route::get('/user-settings', [UserSettingsController::class, 'index'])->name('user-settings.index');
+    Route::patch('/user-settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
 
 
 });

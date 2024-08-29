@@ -88,6 +88,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import {router} from "@inertiajs/vue3";
 
 export default {
     emits: ['close'],
@@ -123,8 +124,10 @@ export default {
                         }))
                     ),
                 };
-                await axios.post('/user-settings', payload);
-                alert('Settings updated successfully');
+                await axios.patch('/user-settings', payload);
+
+                // Navigate to a different route after saving settings
+                router.visit('/');
             } catch (error) {
                 console.error('Error saving settings:', error);
             }
@@ -137,6 +140,7 @@ export default {
             activeCategory,
             getActiveCategorySettings,
             saveSettings,
+            fetchSettings
         };
     },
 };

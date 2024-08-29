@@ -28,7 +28,7 @@ class SettingsSeeder extends Seeder
                 'key' => 'theme',
                 'name' => 'Theme',
                 'type' => 'select',
-                'options' => json_encode(['Lofi Cofee', 'Seoul Sunrise', 'Parisian Cat']),
+                'options' => json_encode(['Lofi Cafe', 'Seoul Sunrise', 'Parisian Cat']),
                 'default_value' => 'Parisian Cat',
                 'display_order' => 1,
             ],
