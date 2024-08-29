@@ -1,13 +1,26 @@
 <template>
     <div class="flex flex-col items-center">
         <div class="flex space-x-4 mb-8">
-            <button @click="setTimer('pomodoro', 25)" id="default-timer" class="timer-button">
+            <button
+                @click="setTimer('pomodoro', 25)"
+                id="default-timer"
+                class="timer-button"
+                :class="{ 'active-button': currentTimerType === 'pomodoro' }"
+            >
                 pomodoro
             </button>
-            <button @click="setTimer('shortBreak', 5)" class="timer-button">
+            <button
+                @click="setTimer('shortBreak', 5)"
+                class="timer-button"
+                :class="{ 'active-button': currentTimerType === 'shortBreak' }"
+            >
                 short break
             </button>
-            <button @click="setTimer('longBreak', 15)" class="timer-button">
+            <button
+                @click="setTimer('longBreak', 15)"
+                class="timer-button"
+                :class="{ 'active-button': currentTimerType === 'longBreak' }"
+            >
                 long break
             </button>
         </div>
@@ -17,7 +30,7 @@
         </div>
 
         <div class="flex space-x-4 mb-8 cent">
-            <button @click="toggleTimer" id="stop-start-button" class="control-button">
+            <button @click="toggleTimer" id="stop-start-button" class="control-button bg-white text-black border-2 border-transparent hover:bg-transparent hover:text-white hover:border-2 hover:border-white">
                 {{ isRunning ? 'pause' : 'start' }}
             </button>
             <button @click="resetTimer" class="text-3xl">
@@ -179,15 +192,24 @@ export default {
     border-radius: 9999px;
     transition: all 0.2s;
 }
+
+.timer-button:focus{
+    background-color: white;
+    color: black;
+}
+
 .timer-button:hover {
     background-color: white;
-    color: gray;
+    color: black;
 }
 .control-button {
     padding: 0.5rem 2rem;
-    background-color: white;
-    color: gray;
     border-radius: 9999px;
     font-weight: 600;
+}
+
+.active-button {
+    background-color: white;
+    color: black;
 }
 </style>
