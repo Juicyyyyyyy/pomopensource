@@ -40,6 +40,19 @@ class UserSettingsController extends Controller
         return response()->json($formattedSettings);
     }
 
+    public function getBackground()
+    {
+        $background = UserSetting::where('user_id', Auth::id())
+            ->whereHas('setting', function ($query) {
+                $query->where('key', 'theme');
+            })
+            ->with('setting')
+            ->first();
+
+        return $background["value"];
+
+    }
+
     public function update(Request $request)
     {
         $user = Auth::user();

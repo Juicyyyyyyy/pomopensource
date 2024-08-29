@@ -2,7 +2,7 @@
     <div class="app min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
          :style="{ backgroundImage: `url(${backgroundImage})` }">
         <div class="header">
-        <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" />
+            <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" />
         </div>
         <main class="flex flex-col items-center justify-center text-white main-content">
             <ProjectsAndTasks :projects="projects" />
@@ -39,16 +39,14 @@ export default {
     setup() {
         const showStatsModal = ref(false);
         const showSettingsModal = ref(false);
-        const backgroundImage = ref('');
+        const backgroundImage = ref(localStorage.getItem('userBackground') || '');
 
         // Fetch settings on component mount
-        const fetchSettings = async () => {
+        const fetchBackgroundImage = async () => {
             try {
-                const response = await axios.get('/user-settings');
-                const settings = response.data;
-                const themeSettingCategory = settings.find(setting => setting.name === 'General');
-                const themeSetting = themeSettingCategory.settings.find(setting => setting.key === 'theme');
-                backgroundImage.value = getBackgroundImage(themeSetting.value);
+                const response = await axios.get('/background');
+                backgroundImage.value = getBackgroundImage(response.data);
+                localStorage.setItem('userBackground', backgroundImage.value);
             } catch (error) {
                 console.error('Error fetching settings:', error);
             }
@@ -84,7 +82,7 @@ export default {
         });
 
         // Fetch settings on mount
-        onMounted(fetchSettings);
+        onMounted(fetchBackgroundImage);
 
         return {
             showStatsModal,
