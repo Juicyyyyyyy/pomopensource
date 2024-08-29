@@ -20,6 +20,19 @@ class SettingsSeeder extends Seeder
             DB::table('setting_categories')->insertOrIgnore($category);
         }
 
+        // Read theme image files from the directory
+        $themeImages = glob(public_path('images/backgrounds/*.png'));
+        $themeOptions = [];
+
+        foreach ($themeImages as $image) {
+            // Get the base name (e.g., "Lofi_Cafe.png")
+            $basename = basename($image, '.png');
+            // Replace underscores with spaces and capitalize each word
+            $formattedName = ucwords(str_replace('_', ' ', $basename));
+            // Add to theme options
+            $themeOptions[] = $formattedName;
+        }
+
         // Seed settings
         $settings = [
             // General settings
@@ -28,8 +41,8 @@ class SettingsSeeder extends Seeder
                 'key' => 'theme',
                 'name' => 'Theme',
                 'type' => 'select',
-                'options' => json_encode(['Lofi Cafe', 'Seoul Sunrise', 'Parisian Cat']),
-                'default_value' => 'Parisian Cat',
+                'options' => json_encode($themeOptions),
+                'default_value' => $themeOptions[0] ?? 'Default Theme',
                 'display_order' => 1,
             ],
             // Timer settings

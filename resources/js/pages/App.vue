@@ -1,13 +1,15 @@
 <template>
     <div class="app min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
          :style="{ backgroundImage: `url(${backgroundImage})` }">
+        <div class="header">
         <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" />
-        <main class="flex flex-col items-center justify-center text-white">
+        </div>
+        <main class="flex flex-col items-center justify-center text-white main-content">
             <ProjectsAndTasks :projects="projects" />
         </main>
-        <Footer />
         <StatsModal v-if="showStatsModal" @close="toggleStatsModal" />
         <SettingsModal v-if="showSettingsModal" @close="toggleSettingsModal" />
+        <div class="background-overlay"></div> <!-- Add the overlay here -->
     </div>
 </template>
 
@@ -98,7 +100,18 @@ export default {
 
 <style>
 .app {
+    position: relative;
     background-attachment: fixed;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
 .bg-cover {
@@ -111,6 +124,16 @@ export default {
 
 .bg-center {
     background-position: center;
+}
+
+.main-content {
+    position: relative;
+    z-index: 2;
+}
+
+.header, .footer {
+    position: relative;
+    z-index: 2;
 }
 
 </style>
