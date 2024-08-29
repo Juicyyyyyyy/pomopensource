@@ -15,19 +15,41 @@
                 <i class="fas fa-cog w-4 h-4"></i>
                 <span class="text-sm font-inter">Settings</span>
             </button>
-            <a class="py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20" href="register">
+            <a v-if="!auth" class="py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20" href="register">
                 <i class="fas fa-user w-6 h-6"></i>
                 <span class="text-sm font-inter">Login</span>
+            </a>
+            <a v-if="auth" @click.prevent="logout" class="py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20 cursor-pointer">
+                <i class="fas fa-sign-out-alt w-6 h-6"></i>
+                <span class="text-sm font-inter">Logout</span>
             </a>
         </div>
     </header>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Header',
-    emits: ['toggleStats', 'toggleSettings']
+    emits: ['toggleStats', 'toggleSettings'],
+    props: {
+        auth: {
+            default: false
+        }
+    },
+    methods: {
+        async logout() {
+            try {
+                await axios.post('/logout');
+                window.location.reload();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+    }
 };
+
 </script>
 
 <style scoped>

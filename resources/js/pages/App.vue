@@ -2,14 +2,14 @@
     <div class="app min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
          :style="{ backgroundImage: `url(${backgroundImage})` }">
         <div class="header">
-            <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" />
+            <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" :auth="isAuthenticated" />
         </div>
         <main class="flex flex-col items-center justify-center text-white main-content">
             <ProjectsAndTasks :projects="projects" />
         </main>
         <StatsModal v-if="showStatsModal" @close="toggleStatsModal" />
         <SettingsModal v-if="showSettingsModal" @close="toggleSettingsModal" />
-        <div class="background-overlay"></div> <!-- Add the overlay here -->
+        <div class="background-overlay"></div>
     </div>
 </template>
 
@@ -40,6 +40,7 @@ export default {
         const showStatsModal = ref(false);
         const showSettingsModal = ref(false);
         const backgroundImage = ref(localStorage.getItem('userBackground') || '');
+        const isAuthenticated = ref(false);
 
         // Fetch settings on component mount
         const fetchBackgroundImage = async () => {
@@ -49,6 +50,15 @@ export default {
                 localStorage.setItem('userBackground', backgroundImage.value);
             } catch (error) {
                 console.error('Error fetching settings:', error);
+            }
+        };
+
+        const checkAuthentication = async () => {
+            try {
+                const response = await axios.get('/isAuthenticated');
+                isAuthenticated.value = response.data;
+            } catch (error) {
+                console.error('Error fetching auth status:', error);
             }
         };
 
@@ -83,6 +93,7 @@ export default {
 
         // Fetch settings on mount
         onMounted(fetchBackgroundImage);
+        checkAuthentication();
 
         return {
             showStatsModal,
@@ -90,7 +101,8 @@ export default {
             toggleStatsModal,
             toggleSettingsModal,
             backgroundImage,
-            saveSettings
+            saveSettings,
+            isAuthenticated
         };
     },
 };
