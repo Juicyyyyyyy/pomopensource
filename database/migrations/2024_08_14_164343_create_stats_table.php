@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('stats', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->float('minute_focused')->default(0.0); // in minutes
             $table->unsignedInteger('days_accessed')->default(0);

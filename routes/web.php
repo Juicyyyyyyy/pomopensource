@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\UserStatsController;
 use App\Http\Controllers\FocusedSessionController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/user-stats/calendar/{year}', [UserStatsController::class, 'getCalendarData']);
     Route::get('/user-stats/calendar/{year}/{month}', [UserStatsController::class, 'getCalendarData']);
     Route::get('/user-stats/calendar/{year}/{month}/{day}', [UserStatsController::class, 'getCalendarData']);
+
+    // Routes for User Settings
+    Route::get('/user-settings', [UserSettingsController::class, 'index'])->name('user-settings.index');
 
 
 });

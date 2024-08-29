@@ -14,11 +14,15 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(SettingCategory::class);
-            $table->timestamps();
+            $table->foreignId('category_id')->constrained('setting_categories')->onDelete('cascade');
+            $table->string('key')->unique();
             $table->string('name');
-            // value type ?
-            $table->text('default_value')->nullable();
+            $table->string('type'); // boolean/integer etc
+            $table->text('options')->nullable();
+            $table->text('description')->nullable();
+            $table->text('default_value');
+            $table->integer('display_order');
+            $table->timestamps();
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Project::class);
+            $table->foreignIdFor(Project::class)->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->string('name', length: 255);
             $table->unsignedInteger('minute_focused')->default(0); // in minutes

@@ -83,7 +83,7 @@ export default {
 
         const addProject = () => {
             if (newProjectName.value.trim()) {
-                router.reload({
+                router.visit(`/projects/`, {
                     method: 'post',
                     data: { name: newProjectName.value },
                     preserveScroll: true,
@@ -151,7 +151,7 @@ export default {
 
 
         const deleteTask = (project, taskId) => {
-            if (confirm('Are you sure you want to delete this task?')) {
+            if (confirm('Are you sure you want to delete this subproject?')) {
                 router.visit(`/tasks/${taskId}`, {
                     method: 'delete',
                     preserveScroll: true,

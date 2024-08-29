@@ -15,11 +15,10 @@ return new class extends Migration
     {
         Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Setting::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Setting::class)->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->text('value')->nullable();
-            $table->text('description')->nullable();
+            $table->text('value');
         });
     }
 

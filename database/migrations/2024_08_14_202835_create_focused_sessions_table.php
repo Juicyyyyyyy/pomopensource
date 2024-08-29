@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('focused_sessions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Task::class)->nullable();;
             $table->timestamps();
             $table->dateTime('started_at');

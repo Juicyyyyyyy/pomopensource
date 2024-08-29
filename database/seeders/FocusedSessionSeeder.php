@@ -3,11 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\FocusedSession;
-use App\Models\Project;
-use App\Models\Task;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FocusedSessionSeeder extends Seeder
