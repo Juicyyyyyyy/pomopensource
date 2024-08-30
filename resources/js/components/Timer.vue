@@ -47,11 +47,11 @@
                     class="bg-gray-100 text-gray-800 rounded-lg p-3 border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none hover:bg-gray-200 transition duration-150 ease-in-out">
                 <option value="" class="text-gray-600">No specific project (General focus)</option>
                 <template v-for="project in projects" :key="project.id">
-                    <option :value="'project_rbNiqBehszLPVzMmR_' + project.id" class="font-bold">
+                    <option :value="'project:rbNiqBehszLPVzMmR_' + project.id" class="font-bold">
                         {{ project.name }} (Project)
                     </option>
                     <template v-for="task in project.tasks" :key="task.id">
-                        <option :value="'task_rbNiqBehszLPVzMmR_' + task.id">
+                        <option :value="'task:rbNiqBehszLPVzMmR_' + task.id">
                             - {{ task.name }}
                         </option>
                     </template>
@@ -64,6 +64,7 @@
 <script>
 import { ref, computed } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+import axios from "axios";
 
 export default {
     props: {
@@ -120,25 +121,28 @@ export default {
 
             // Start the focused session only for pomodoro timer
             if (currentTimerType.value === 'pomodoro') {
+                const payload = {
+                    project_id: null,
+                    task_id: null,
+                    started_at: sessionStartTime.value,
+                };
+
                 if (selectedId.value) {
                     const selected = selectedId.value;
-                    Inertia.post('/focused-sessions', {
-                        project_id: selected.startsWith('project_rbNiqBehszLPVzMmR_') ? parseInt(selected.split('_')[1]) : null,
-                        task_id: selected.startsWith('task_rbNiqBehszLPVzMmR_') ? parseInt(selected.split('_')[1]) : null,
-                        started_at: sessionStartTime.value,
-                    }, {
-                        preserveState: true,
-                    });
-                } else {
-                    // If no task or project is selected
-                    Inertia.post('/focused-sessions', {
-                        project_id: null,
-                        task_id: null,
-                        started_at: sessionStartTime.value,
-                    }, {
-                        preserveState: true,
-                    });
+                    if (selected.startsWith('project:rbNiqBehszLPVzMmR_')) {
+                        payload.project_id = extractAfterFirstUnderscore(selected);
+                    } else if (selected.startsWith('task:rbNiqBehszLPVzMmR_')) {
+                        payload.task_id = extractAfterFirstUnderscore(selected);
+                    }
                 }
+
+                axios.post('/focused-sessions', payload)
+                    .then(response => {
+                        console.log('Session started successfully', response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error starting session', error);
+                    });
             }
         };
 
@@ -157,15 +161,30 @@ export default {
         };
 
         const endSession = () => {
-            Inertia.patch('/focused-sessions/current', {
+            // Create the payload to send with the request
+            const payload = {
                 ended_at: new Date(),
                 time_focused: initialTime.value - time.value,
-            }, {
-                preserveState: true,
-            });
+            };
+
+            // Send the PATCH request using axios
+            axios.patch('/focused-sessions/current', payload)
+                .then(response => {
+                    console.log('Session ended successfully', response.data);
+                })
+                .catch(error => {
+                    console.error('Error ending session', error);
+                });
+
+            // Reset the session-related state
             sessionStartTime.value = null;
             selectedTaskId.value = '';
         };
+
+        function extractAfterFirstUnderscore(str) {
+            const index = str.indexOf('_');
+            return index !== -1 ? str.slice(index + 1) : '';
+        }
 
         return {
             time,

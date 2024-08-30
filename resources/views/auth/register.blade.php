@@ -14,6 +14,9 @@
             <x-input-label for="email" class="text-white/70" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full bg-white/20 border border-white/30 rounded-lg text-white" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <p class="text-xs text-white mt-2">
+               * We will never use your email for any purpose other than password recovery.
+            </p>
         </div>
 
         <!-- Password -->

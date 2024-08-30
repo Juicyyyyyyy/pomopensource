@@ -32,9 +32,7 @@ class FocusedSessionController extends Controller
 
         $focusedSession = $request->user()->focusedSessions()->create($validated);
 
-        return Inertia::render('FocusedSessions/Show', [
-            'focusedSession' => $focusedSession->load(['task', 'project']),
-        ]);
+        return response()->json(['message' => 'Correctly add session']);
     }
 
     public function update(Request $request)
@@ -58,13 +56,6 @@ class FocusedSessionController extends Controller
             'ended_at' => $validated['ended_at'],
             'time_focused' => $validated['time_focused'],
             'minute_focused' => $minutesFocused,
-        ]);
-
-
-        return Redirect::back()->with([
-            'success' => true,
-            'focusedSession' => $focusedSession->fresh()->load(['task', 'project']),
-            'message' => 'Focused session updated successfully.',
         ]);
     }
 }
