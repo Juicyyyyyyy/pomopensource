@@ -2,7 +2,7 @@
     <div class="flex flex-col items-center">
         <div class="flex space-x-4 mb-8">
             <button
-                @click="setTimer('pomodoro', 25)"
+                @click="setTimer('pomodoro', settings.pomodoro_duration)"
                 id="default-timer"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'pomodoro' }"
@@ -10,14 +10,14 @@
                 pomodoro
             </button>
             <button
-                @click="setTimer('shortBreak', 5)"
+                @click="setTimer('shortBreak', settings.short_break_duration)"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'shortBreak' }"
             >
                 short break
             </button>
             <button
-                @click="setTimer('longBreak', 15)"
+                @click="setTimer('longBreak', settings.long_break_duration)"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'longBreak' }"
             >
@@ -63,7 +63,6 @@
 
 <script>
 import { ref, computed } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
 import axios from "axios";
 
 export default {
@@ -71,11 +70,14 @@ export default {
         projects: {
             type: Array,
             required: true
+        },
+        settings: {
+            type: Object,
         }
     },
     setup(props) {
-        const time = ref(25 * 60);
-        const initialTime = ref(25 * 60);
+        const time = ref(props.settings.pomodoro_duration * 60);
+        const initialTime = ref(props.settings.pomodoro_duration * 60);
         const isRunning = ref(false);
         const timerInterval = ref(null);
         const selectedTaskId = ref('');
@@ -197,6 +199,7 @@ export default {
             toggleTimer,
             resetTimer,
             projects: computed(() => props.projects),
+            settings: computed(() => props.settings),
         };
     }
 };

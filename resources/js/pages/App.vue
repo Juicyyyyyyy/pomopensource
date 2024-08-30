@@ -5,7 +5,7 @@
             <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" :auth="isAuthenticated" />
         </div>
         <main class="flex flex-col items-center justify-center text-white main-content">
-            <ProjectsAndTasks :projects="projects" />
+            <ProjectsAndTasks :projects="projects" :settings="settings" />
         </main>
         <StatsModal v-if="showStatsModal" @close="toggleStatsModal" />
         <SettingsModal v-if="showSettingsModal" @close="toggleSettingsModal" />
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import {ref, onMounted, watch, computed} from 'vue';
 import Header from '../components/Header.vue';
 import ProjectsAndTasks from '../components/ProjectsAndTasks.vue';
 import Footer from '../components/Footer.vue';
@@ -41,6 +41,31 @@ export default {
         const showSettingsModal = ref(false);
         const backgroundImage = ref(localStorage.getItem('userBackground') || '');
         const isAuthenticated = ref(false);
+        const settings = ref({});
+
+        const fetchSettings = async () => {
+            try {
+                const response = await axios.get('/user-settings');
+                const rawData = response.data;
+
+                // Transform the data into a more usable JSON format
+                const transformedData = Array.from(rawData).reduce((acc, category) => {
+                    acc[category.name.toLowerCase()] = {
+                        icon: category.icon,
+                        settings: Array.from(category.settings).reduce((settingAcc, setting) => {
+                            settingAcc[setting.key.toLowerCase()] = setting.value;
+                            return settingAcc;
+                        }, {})
+                    };
+                    return acc;
+                }, {});
+
+                settings.value = transformedData;
+                localStorage.setItem('settings', JSON.stringify(transformedData));
+            } catch (error) {
+                console.error('Error fetching settings:', error);
+            }
+        };
 
         // Fetch settings on component mount
         const fetchBackgroundImage = async () => {
@@ -78,6 +103,18 @@ export default {
             }
         };
 
+        const loadSettingsFromStorage = () => {
+            const storedSettings = localStorage.getItem('settings');
+            if (storedSettings) {
+                try {
+                    settings.value = JSON.parse(storedSettings);
+                } catch (error) {
+                    console.error('Error parsing stored settings:', error);
+                    settings.value = {};  // Fallback to empty object if parsing fails
+                }
+            }
+        };
+
         const toggleStatsModal = () => {
             showStatsModal.value = !showStatsModal.value;
         };
@@ -91,7 +128,10 @@ export default {
             localStorage.setItem('userBackground', newValue);
         });
 
+        loadSettingsFromStorage();
+
         // Fetch settings on mount
+        onMounted(fetchSettings);
         onMounted(fetchBackgroundImage);
         checkAuthentication();
 
@@ -101,6 +141,7 @@ export default {
             toggleStatsModal,
             toggleSettingsModal,
             backgroundImage,
+            settings,
             saveSettings,
             isAuthenticated
         };
