@@ -180,4 +180,32 @@ class UserStatsController extends Controller
             'initialDay' => (int)$startDate->day,
         ]);
     }
+
+    public function getProjectStats(Request $request)
+    {
+        $projects = $request->user()->projects()->with(['tasks' => function ($query) {
+            $query->withSum('focusedSessions', 'minute_focused');
+        }])->get();
+
+        return response()->json([
+            'projects' => $projects->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'name' => $project->name,
+                    'tasks' => $project->tasks->map(function ($task) {
+                        return [
+                            'id' => $task->id,
+                            'name' => $task->name,
+                            'time_focused' => $task->focused_sessions_sum_minute_focused ?? 0,
+                        ];
+                    }),
+                ];
+            }),
+        ]);
+    }
+
+
+
+
+
 }

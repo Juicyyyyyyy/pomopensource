@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/user-stats/calendar/{year}', [UserStatsController::class, 'getCalendarData']);
     Route::get('/user-stats/calendar/{year}/{month}', [UserStatsController::class, 'getCalendarData']);
     Route::get('/user-stats/calendar/{year}/{month}/{day}', [UserStatsController::class, 'getCalendarData']);
+    Route::get('/projects-stats', [UserStatsController::class, 'getProjectStats'])->name('projects-stats');
 
     // Routes for User Settings
     Route::get('/user-settings', [UserSettingsController::class, 'index'])->name('user-settings.index');

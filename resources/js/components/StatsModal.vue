@@ -10,7 +10,7 @@
             <div class="modal-body pt-6 overflow-y-auto">
                 <div class="flex space-x-2 mb-6">
                     <button
-                        v-for="tab in ['Summary', 'Detail', 'Ranking']"
+                        v-for="tab in ['Summary', 'Detail']"
                         :key="tab"
                         :class="['px-4 py-2 rounded-lg text-sm font-semibold transition',
                                  activeTab === tab ? 'bg-white/20 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20']"
@@ -20,25 +20,32 @@
                     </button>
                 </div>
 
-                <h3 class="text-lg font-semibold font-oswald text-white mb-4">Activity Summary</h3>
-                <ActivitySummary :stats="stats" />
+                <div v-if="activeTab === 'Summary'">
+                    <h3 class="text-lg font-semibold font-oswald text-white mb-4">Activity Summary</h3>
+                    <ActivitySummary :stats="stats" />
+                    <h3 class="text-lg font-semibold font-oswald text-white mt-8 mb-4">Monthly Activity</h3>
+                    <Calendar />
+                </div>
 
-                <h3 class="text-lg font-semibold font-oswald text-white mt-8 mb-4">Monthly Activity</h3>
-                <Calendar />
+                <div v-else>
+                    <h3 class="text-lg font-semibold font-oswald text-white mb-4">Detailed Activity</h3>
+                    <ActivityDetail :projects="projects" />
+                </div>
             </div>
         </div>
     </div>
 </template>
-
 
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import ActivitySummary from './ActivitySummary.vue';
 import Calendar from './Calendar.vue';
+import ActivityDetail from "./ActivityDetail.vue";
 
 export default {
     components: {
+        ActivityDetail,
         ActivitySummary,
         Calendar,
     },
@@ -50,6 +57,7 @@ export default {
             days_accessed: '--',
             day_streak: '--'
         });
+        const projects = ref([]);
 
         const fetchStats = async () => {
             try {
@@ -60,11 +68,26 @@ export default {
             }
         };
 
-        onMounted(fetchStats);
+        const fetchProjectStats = async () => {
+            try {
+                const response = await axios.get('/projects-stats'); // Ensure this route exists
+                projects.value = response.data.projects;
+            } catch (error) {
+                console.error('Error fetching project stats:', error);
+            }
+        };
+
+        onMounted(async () => {
+            await fetchStats();
+            if (activeTab.value === 'Detail') {
+                await fetchProjectStats();
+            }
+        });
 
         return {
             activeTab,
             stats,
+            projects,
         };
     },
 };

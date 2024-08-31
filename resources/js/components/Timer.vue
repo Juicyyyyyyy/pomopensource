@@ -36,9 +36,6 @@
             <button @click="resetTimer" class="text-3xl">
                 <i class="fas fa-sync-alt"></i>
             </button>
-            <button class="text-3xl">
-                <i class="fas fa-cog"></i>
-            </button>
         </div>
 
         <!-- Dropdown for project and task selection -->
@@ -113,11 +110,9 @@ export default {
             initialTime.value = time.value;
         };
 
-        // Initial setup
-        updateTimerFromSettings();
 
         // Watch for changes in settings
-        watch(() => props.settings, updateTimerFromSettings, { deep: true });
+        watch(() => props.settings, updateTimerFromSettings, {deep: true});
 
         const startTimer = () => {
             isRunning.value = true;
@@ -236,7 +231,7 @@ export default {
     transition: all 0.2s;
 }
 
-.timer-button:focus{
+.timer-button:focus {
     background-color: white;
     color: black;
 }
@@ -245,6 +240,7 @@ export default {
     background-color: white;
     color: black;
 }
+
 .control-button {
     padding: 0.5rem 2rem;
     border-radius: 9999px;
