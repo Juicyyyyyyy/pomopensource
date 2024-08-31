@@ -2,7 +2,7 @@
     <div class="flex flex-col items-center">
         <div class="flex space-x-4 mb-8">
             <button
-                @click="setTimer('pomodoro', settings.pomodoro_duration)"
+                @click="setTimer('pomodoro', settings.timers.settings.pomodoro_duration)"
                 id="default-timer"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'pomodoro' }"
@@ -10,16 +10,16 @@
                 pomodoro
             </button>
             <button
-                @click="setTimer('shortBreak', settings.short_break_duration)"
+                @click="setTimer('short_break', settings.timers.settings.short_break_duration)"
                 class="timer-button"
-                :class="{ 'active-button': currentTimerType === 'shortBreak' }"
+                :class="{ 'active-button': currentTimerType === 'short_break' }"
             >
                 short break
             </button>
             <button
-                @click="setTimer('longBreak', settings.long_break_duration)"
+                @click="setTimer('long_break', settings.timers.settings.long_break_duration)"
                 class="timer-button"
-                :class="{ 'active-button': currentTimerType === 'longBreak' }"
+                :class="{ 'active-button': currentTimerType === 'long_break' }"
             >
                 long break
             </button>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import {ref, computed, watch} from 'vue';
 import axios from "axios";
 
 export default {
@@ -76,14 +76,15 @@ export default {
         }
     },
     setup(props) {
-        const time = ref(props.settings.pomodoro_duration * 60);
-        const initialTime = ref(props.settings.pomodoro_duration * 60);
+        const time = ref(props.settings.timers.settings.pomodoro_duration * 60);
+        const initialTime = ref(props.settings.timers.settings.pomodoro_duration * 60);
         const isRunning = ref(false);
         const timerInterval = ref(null);
         const selectedTaskId = ref('');
         const selectedId = ref('')
         const sessionStartTime = ref(null);
         const currentTimerType = ref('pomodoro');
+        const audio = ref(null);
 
         const formattedTime = computed(() => {
             const min = Math.floor(time.value / 60);
@@ -91,12 +92,11 @@ export default {
             return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
         });
 
-        const setTimer = (timerType, minutes) => {
-            time.value = minutes * 60;
-            initialTime.value = time.value;
+        const setTimer = (timerType) => {
+            currentTimerType.value = timerType;
+            updateTimerFromSettings();
             clearInterval(timerInterval.value);
             isRunning.value = false;
-            currentTimerType.value = timerType;
         };
 
         const toggleTimer = () => {
@@ -107,6 +107,18 @@ export default {
             }
         };
 
+        const updateTimerFromSettings = () => {
+            const duration = props.settings.timers.settings[`${currentTimerType.value}_duration`];
+            time.value = duration * 60;
+            initialTime.value = time.value;
+        };
+
+        // Initial setup
+        updateTimerFromSettings();
+
+        // Watch for changes in settings
+        watch(() => props.settings, updateTimerFromSettings, { deep: true });
+
         const startTimer = () => {
             isRunning.value = true;
             sessionStartTime.value = new Date();
@@ -115,6 +127,7 @@ export default {
                 if (time.value <= 0) {
                     clearInterval(timerInterval.value);
                     isRunning.value = false;
+                    playAlarmSound();
                     if (currentTimerType.value === 'pomodoro') {
                         endSession();
                     }
@@ -163,13 +176,11 @@ export default {
         };
 
         const endSession = () => {
-            // Create the payload to send with the request
             const payload = {
                 ended_at: new Date(),
                 time_focused: initialTime.value - time.value,
             };
 
-            // Send the PATCH request using axios
             axios.patch('/focused-sessions/current', payload)
                 .then(response => {
                     console.log('Session ended successfully', response.data);
@@ -181,6 +192,16 @@ export default {
             // Reset the session-related state
             sessionStartTime.value = null;
             selectedTaskId.value = '';
+        };
+
+        const playAlarmSound = () => {
+            if (props.settings.sound.settings.play_sound) {
+                const soundFile = `${props.settings.sound.settings.alert_sound}.mp3`;
+                audio.value = new Audio(`/sounds/${soundFile}`);
+                audio.value.play().catch(error => {
+                    console.error('Error playing sound:', error);
+                });
+            }
         };
 
         function extractAfterFirstUnderscore(str) {

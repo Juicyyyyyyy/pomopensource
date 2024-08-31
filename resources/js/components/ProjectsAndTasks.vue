@@ -1,5 +1,5 @@
 <template>
-    <Timer :projects="localProjects" :settings="settings['timers']['settings']"/>
+    <Timer :projects="localProjects" :settings="settings"/>
     <div class="w-full max-w-3xl py-8 px-6 bg-white/10 rounded-lg shadow-lg">
         <h2 class="text-3xl font-bold mb-6 font-oswald text-white">Projects</h2>
 
