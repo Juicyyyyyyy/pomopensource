@@ -185,13 +185,20 @@ class UserStatsController extends Controller
     {
         $projects = $request->user()->projects()->with(['tasks' => function ($query) {
             $query->withSum('focusedSessions', 'minute_focused');
+        }, 'focusedSessions' => function ($query) {
+            $query->selectRaw('project_id, SUM(minute_focused) as total_time')
+                ->groupBy('project_id');
         }])->get();
 
         return response()->json([
             'projects' => $projects->map(function ($project) {
+                $totalTimeOnProject = $project->focusedSessions->sum('total_time');
+                $totalTimeOnTasks = $project->tasks->sum('focused_sessions_sum_minute_focused');
+
                 return [
                     'id' => $project->id,
                     'name' => $project->name,
+                    'total_time_focused' => $totalTimeOnProject + $totalTimeOnTasks,
                     'tasks' => $project->tasks->map(function ($task) {
                         return [
                             'id' => $task->id,
@@ -203,6 +210,7 @@ class UserStatsController extends Controller
             }),
         ]);
     }
+
 
 
 

@@ -70,7 +70,8 @@ export default {
 
         const fetchProjectStats = async () => {
             try {
-                const response = await axios.get('/projects-stats'); // Ensure this route exists
+                const response = await axios.get('/projects-stats');
+                console.log(response)
                 projects.value = response.data.projects;
             } catch (error) {
                 console.error('Error fetching project stats:', error);

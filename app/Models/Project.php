@@ -43,6 +43,11 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function focusedSessions()
+    {
+        return $this->hasMany(FocusedSession::class);
+    }
+
     public function updateTimeFocusedProject(): void
     {
         $this->minute_focused= $this->tasks->sum('minute_focused');

@@ -2,11 +2,13 @@
     <div class="activity-detail bg-white/10 backdrop-blur-lg rounded-lg p-6 shadow-lg">
         <div v-if="projects.length">
             <div v-for="project in projects" :key="project.id" class="mb-6">
-                <h3 class="text-xl font-semibold text-white mb-3">{{ project.name }}</h3>
+                <h3 class="text-xl font-semibold text-white mb-3">
+                    {{ project.name }} - {{ project.total_time_focused/60 }} hours
+                </h3>
                 <div class="ml-4">
                     <div v-for="task in project.tasks" :key="task.id" class="text-white/70">
                         <i class="fas fa-tasks mr-2"></i>
-                        {{ task.name }} - {{ task.time_focused }} mins
+                        {{ task.name }} - {{ task.time_focused/60 }} hours
                     </div>
                 </div>
             </div>
@@ -18,7 +20,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import axios from 'axios';
 
 export default {
