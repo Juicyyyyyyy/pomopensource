@@ -43,12 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/user-stats/calendar/{year}/{month}/{day}', [UserStatsController::class, 'getCalendarData']);
     Route::get('/projects-stats', [UserStatsController::class, 'getProjectStats'])->name('projects-stats');
 
-    // Routes for User Settings
-    Route::get('/user-settings', [UserSettingsController::class, 'index'])->name('user-settings.index');
-    Route::patch('/user-settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
-    Route::get('/background', [UserSettingsController::class, 'getBackground'])->name('user-settings.getBackground');
-
-
 });
+
+Route::get('/user-settings', [UserSettingsController::class, 'index'])->name('user-settings.index');
+Route::patch('/user-settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
+Route::get('/background', [UserSettingsController::class, 'getBackground'])->name('user-settings.getBackground');
 
 require __DIR__.'/auth.php';

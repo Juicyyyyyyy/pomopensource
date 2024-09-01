@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -45,6 +46,24 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Transfer session settings to user account
+        $this->transferSessionSettingsToUser($request, $user);
+
         return redirect("/");
+    }
+
+    public function transferSessionSettingsToUser(Request $request, User $user)
+    {
+        $sessionSettings = $request->session()->get('user_settings', []);
+
+        foreach ($sessionSettings as $settingId => $value) {
+            UserSetting::updateOrCreate(
+                ['user_id' => $user->id, 'setting_id' => $settingId],
+                ['value' => $value]
+            );
+        }
+
+        // Clear the session settings after transfer
+        $request->session()->forget('user_settings');
     }
 }

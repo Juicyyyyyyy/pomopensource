@@ -70,11 +70,12 @@ export default {
         },
         settings: {
             type: Object,
+            default: () => ({})
         }
     },
     setup(props) {
-        const time = ref(props.settings.timers.settings.pomodoro_duration * 60);
-        const initialTime = ref(props.settings.timers.settings.pomodoro_duration * 60);
+        const time = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
+        const initialTime = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
         const isRunning = ref(false);
         const timerInterval = ref(null);
         const selectedTaskId = ref('');
