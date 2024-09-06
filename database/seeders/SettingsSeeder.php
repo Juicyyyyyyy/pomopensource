@@ -33,6 +33,16 @@ class SettingsSeeder extends Seeder
             $themeOptions[] = $formattedName;
         }
 
+        $sounds = glob(public_path('sounds/*.mp3'));
+        $soundOptions = [];
+
+        foreach ($sounds as $sound) {
+            $basename = basename($sound, '.mp3');
+            $formattedName = ucwords(str_replace('_', ' ', $basename));
+            $soundOptions[] = $formattedName;
+
+        }
+
         // Seed settings
         $settings = [
             // General settings
@@ -88,7 +98,7 @@ class SettingsSeeder extends Seeder
                 'key' => 'alert_sound',
                 'name' => 'Alert Sound',
                 'type' => 'select',
-                'options' => json_encode(['Bell', 'Birds', 'Lofi']),
+                'options' => json_encode($soundOptions),
                 'default_value' => 'Birds',
                 'display_order' => 1,
             ],
