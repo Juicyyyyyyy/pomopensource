@@ -27,10 +27,12 @@ class SettingsSeeder extends Seeder
         foreach ($themeImages as $image) {
             // Get the base name (e.g., "Lofi_Cafe.png")
             $basename = basename($image, '.png');
-            // Replace underscores with spaces and capitalize each word
-            $formattedName = ucwords(str_replace('_', ' ', $basename));
-            // Add to theme options
-            $themeOptions[] = $formattedName;
+            if ($basename != "gf") {
+                // Replace underscores with spaces and capitalize each word
+                $formattedName = ucwords(str_replace('_', ' ', $basename));
+                // Add to theme options
+                $themeOptions[] = $formattedName;
+            }
         }
 
         $sounds = glob(public_path('sounds/*.mp3'));
