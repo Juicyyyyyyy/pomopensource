@@ -39,6 +39,8 @@ class ProjectController extends Controller
 
     public function destroy(Request $request, Project $project)
     {
+        $project->tasks()->delete();
+
         $project->delete();
     }
 }
