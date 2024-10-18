@@ -60,124 +60,110 @@
 
 </template>
 
+
 <script>
-import {ref, reactive, computed} from 'vue'
-import { Inertia } from '@inertiajs/inertia'
+import { ref, reactive } from 'vue';
+import axios from 'axios';
 import Timer from "./Timer.vue";
-import {router} from "@inertiajs/vue3";
 
 export default {
-    components: {
-        Timer
+  components: {
+    Timer
+  },
+  props: {
+    projects: {
+      type: Array,
+      required: true
     },
-    props: {
-        projects: {
-            type: Array,
-            required: true
-        },
-        settings: {
-            type: Object,
-        }
-    },
-    setup(props) {
-        const localProjects = ref(computed(() => props.projects))
-        const newProjectName = ref('')
-        const newTaskNames = reactive({})
-
-        const addProject = () => {
-            if (newProjectName.value.trim()) {
-                router.visit(`/projects/`, {
-                    method: 'post',
-                    data: { name: newProjectName.value },
-                    preserveScroll: true,
-                    onError: (errors) => {
-                        console.error(errors);
-                    }
-                });
-                newProjectName.value = '';
-            }
-        }
-
-
-        const updateProject = (project) => {
-                router.visit(`/projects/${project.id}`, {
-                    method: 'patch',
-                    data: { name: project.name },
-                    preserveScroll: true,
-                    onError: (errors) => {
-                        console.error(errors);
-                    }
-                });
-        }
-
-
-        const deleteProject = (projectId) => {
-            if (confirm('Are you sure you want to delete this project?')) {
-                router.visit(`/projects/${projectId}`, {
-                    method: 'delete',
-                    preserveScroll: true,
-                    onError: (errors) => {
-                        console.error(errors);
-                    }
-                });
-            }
-        }
-
-
-        const toggleTasksVisibility = (project) => {
-            project.showTasks = !project.showTasks
-        }
-
-        const addTask = (project) => {
-            const taskName = newTaskNames[project.id]?.trim();
-            if (taskName) {
-                router.visit(`/projects/${project.id}/tasks`, {
-                    method: 'post',
-                    data: { name: taskName },
-                    preserveScroll: true,
-                    onError: (errors) => {
-                        console.error(errors);
-                    }
-                });
-                newTaskNames[project.id] = '';
-            }
-        }
-
-
-
-
-        const updateTask = (project, task) => {
-            Inertia.patch(`/tasks/${task.id}`, { name: task.name }, {
-                preserveScroll: true,
-            });
-        }
-
-
-        const deleteTask = (project, taskId) => {
-            if (confirm('Are you sure you want to delete this subproject?')) {
-                router.visit(`/tasks/${taskId}`, {
-                    method: 'delete',
-                    preserveScroll: true,
-                    onError: (errors) => {
-                        console.error(errors);
-                    }
-                });
-            }
-        }
-
-
-        return {
-            localProjects,
-            newProjectName,
-            newTaskNames,
-            addProject,
-            updateProject,
-            deleteProject,
-            toggleTasksVisibility,
-            addTask,
-            updateTask,
-            deleteTask
-        }
+    settings: {
+      type: Object,
     }
-}
+  },
+  setup(props) {
+    const localProjects = ref([...props.projects]); // Use a deep copy of projects
+    const newProjectName = ref('');
+    const newTaskNames = reactive({});
+
+    const addProject = async () => {
+      if (newProjectName.value.trim()) {
+        try {
+          const response = await axios.post('/projects', { name: newProjectName.value });
+          localProjects.value.push(response.data); // Push the new project to localProjects
+          newProjectName.value = '';
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    const updateProject = async (project) => {
+      try {
+        await axios.patch(`/projects/${project.id}`, { name: project.name });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const deleteProject = async (projectId) => {
+      if (confirm('Are you sure you want to delete this project?')) {
+        try {
+          await axios.delete(`/projects/${projectId}`);
+          localProjects.value = localProjects.value.filter(project => project.id !== projectId);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    const toggleTasksVisibility = (project) => {
+      project.showTasks = !project.showTasks;
+    };
+
+    const addTask = async (project) => {
+      const taskName = newTaskNames[project.id]?.trim();
+      if (taskName) {
+        try {
+          const response = await axios.post(`/projects/${project.id}/tasks`, { name: taskName });
+          project.tasks.push(response.data); // Push the new task to the project's tasks
+          newTaskNames[project.id] = '';
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    const updateTask = async (project, task) => {
+      try {
+        await axios.patch(`/tasks/${task.id}`, { name: task.name });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const deleteTask = async (project, taskId) => {
+      if (confirm('Are you sure you want to delete this subproject?')) {
+        try {
+          await axios.delete(`/tasks/${taskId}`);
+          project.tasks = project.tasks.filter(task => task.id !== taskId);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    return {
+      localProjects,
+      newProjectName,
+      newTaskNames,
+      addProject,
+      updateProject,
+      deleteProject,
+      toggleTasksVisibility,
+      addTask,
+      updateTask,
+      deleteTask
+    };
+  }
+};
 </script>
+

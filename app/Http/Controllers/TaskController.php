@@ -16,6 +16,8 @@ class TaskController extends Controller
         ]);
 
         $task = $project->tasks()->create($validated);
+
+        return response()->json($task);
     }
 
     public function update(Request $request, Task $task)

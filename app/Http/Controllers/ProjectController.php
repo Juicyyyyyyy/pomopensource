@@ -15,14 +15,18 @@ class ProjectController extends Controller
         return Inertia::render('App', ['projects' => $projects]);
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+        'name' => 'required|string|max:255',
         ]);
 
         $project = auth()->user()->projects()->create($validated);
+
+        return response()->json($project);
     }
+
 
     public function update(Request $request, Project $project)
     {
