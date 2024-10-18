@@ -90,6 +90,7 @@ export default {
           const response = await axios.post('/projects', { name: newProjectName.value });
           localProjects.value.push(response.data); // Push the new project to localProjects
           newProjectName.value = '';
+          window.location.reload();
         } catch (error) {
           console.error(error);
         }
