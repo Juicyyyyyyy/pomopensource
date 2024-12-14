@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Stats;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserStatsController extends Controller
@@ -34,8 +35,9 @@ class UserStatsController extends Controller
 
         // Update days accessed
         $daysAccessed = $user->focusedSessions()
-            ->selectRaw('DATE(started_at) as date')
+            ->select(DB::raw('DATE(started_at) as date'))
             ->distinct()
+            ->get()
             ->count();
         $stats->days_accessed = $daysAccessed;
 
@@ -53,6 +55,7 @@ class UserStatsController extends Controller
         $stats->minute_focused = $totalMinutesFocused;
     }
 
+
     private function updateDayStreak(User $user, Stats $stats): void
     {
         $lastSession = $user->focusedSessions()->latest('started_at')->first();
@@ -63,25 +66,20 @@ class UserStatsController extends Controller
         }
 
         $today = Carbon::today();
+        $yesterday = $today->copy()->subDay();
         $lastSessionDate = $lastSession->started_at->startOfDay();
+        $oldestSessionDate = $user->focusedSessions()->oldest('started_at')->first()->started_at->startOfDay();
 
-        if ($lastSessionDate->lt($today->subDay())) {
+        if ($lastSessionDate->lt($yesterday) || $oldestSessionDate->eq($today)) {
             // Last session was before yesterday, reset streak
-            $stats->day_streak = 0;
-        } elseif ($lastSessionDate->eq($today) || $lastSessionDate->eq($today->subDay())) {
-            // Last session was today or yesterday, check for continuous streak
-            $streak = 1;
-            $checkDate = $lastSessionDate->copy()->subDay();
-
-            while ($user->focusedSessions()->whereDate('started_at', $checkDate)->exists()) {
-                $streak++;
-                $checkDate->subDay();
-            }
-
-            $stats->day_streak = $streak;
+            $stats->day_streak = 1;
+        } elseif ($lastSessionDate->eq($yesterday)) {
+            // Last session was yesterday, increment streak
+            $stats->day_streak++;
         }
-        // If last session was yesterday, keep the current streak
+        // If the last session was today, keep the current streak
     }
+
 
     public function getCalendarData(Request $request, $year, $month = null, $day = null)
     {
