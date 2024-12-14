@@ -1,6 +1,6 @@
 <template>
-    <div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-        <div class="modal-content w-full max-w-2xl p-6 bg-white/10 backdrop-blur-lg rounded-lg shadow-xl transform transition-all duration-300 ease-in-out">
+    <div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" @click.self="$emit('close')">
+        <div class="modal-content w-full max-w-2xl p-6 bg-white/10 backdrop-blur-lg rounded-lg shadow-xl transform transition-all duration-300 ease-in-out" @keydown.esc="$emit('close')" tabindex="0">
             <div class="flex justify-between items-center pb-4 border-b border-white/20">
                 <h2 class="text-2xl font-bold font-oswald text-white">Settings</h2>
                 <button @click="$emit('close')" class="text-white hover:text-gray-300 transition duration-150 ease-in-out">
