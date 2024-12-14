@@ -173,27 +173,27 @@ export default {
             }
         };
 
+
         const previousPeriod = () => {
             if (currentView.value === 'week') {
-                currentDate.value.setDate(currentDate.value.getDate() - 7);
+                currentDate.value = new Date(currentDate.value.setDate(currentDate.value.getDate() - 7));
             } else if (currentView.value === 'month') {
-                currentDate.value.setMonth(currentDate.value.getMonth() - 1);
+                currentDate.value = new Date(currentDate.value.setMonth(currentDate.value.getMonth() - 1));
             } else {
-                currentDate.value.setFullYear(currentDate.value.getFullYear() - 1);
+                currentDate.value = new Date(currentDate.value.setFullYear(currentDate.value.getFullYear() - 1));
             }
-            fetchCalendarData();
         };
 
         const nextPeriod = () => {
             if (currentView.value === 'week') {
-                currentDate.value.setDate(currentDate.value.getDate() + 7);
+                currentDate.value = new Date(currentDate.value.setDate(currentDate.value.getDate() + 7));
             } else if (currentView.value === 'month') {
-                currentDate.value.setMonth(currentDate.value.getMonth() + 1);
+                currentDate.value = new Date(currentDate.value.setMonth(currentDate.value.getMonth() + 1));
             } else {
-                currentDate.value.setFullYear(currentDate.value.getFullYear() + 1);
+                currentDate.value = new Date(currentDate.value.setFullYear(currentDate.value.getFullYear() + 1));
             }
-            fetchCalendarData();
         };
+
 
         const changeView = (view) => {
             currentView.value = view;
