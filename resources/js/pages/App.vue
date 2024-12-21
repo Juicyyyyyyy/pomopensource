@@ -5,7 +5,7 @@
             <Header @toggleStats="toggleStatsModal" @toggle-settings="toggleSettingsModal" :auth="isAuthenticated" />
         </div>
         <main class="flex flex-col items-center justify-center text-white main-content">
-            <ProjectsAndTasks :projects="projects" :settings="settings" />
+            <ProjectsAndTasks :projects="projects" :settings="settings" :isAuthenticated="isAuthenticated"/>
         </main>
         <StatsModal v-if="showStatsModal" @close="toggleStatsModal" />
         <SettingsModal v-if="showSettingsModal" @close="toggleSettingsModal" />

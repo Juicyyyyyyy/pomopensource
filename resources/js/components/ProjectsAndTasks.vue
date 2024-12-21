@@ -5,16 +5,24 @@
 
         <!-- Projects Section -->
         <div class="mb-8">
-            <form @submit.prevent="addProject" class="mb-6">
-                <div class="mb-4">
-                    <input v-model="newProjectName" type="text" placeholder="New project name" required
-                           class="w-full py-3 px-4 bg-white/10 border border-white/30 rounded-lg text-center text-sm font-inter font-semibold text-white placeholder-white/70 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition duration-200">
-                </div>
-                <button type="submit"
-                        class="w-full py-3 border-2 border-dashed border-white rounded-lg text-center text-sm font-inter font-semibold text-white hover:bg-white/20 hover:border-white transition duration-200">
-                    + Add Project
-                </button>
-            </form>
+
+<form @submit.prevent="addProject" class="mb-6">
+    <div class="mb-4">
+        <input v-model="newProjectName" type="text" placeholder="New project name" required
+               class="w-full py-3 px-4 bg-white/10 border border-white/30 rounded-lg text-center text-sm font-inter font-semibold text-white placeholder-white/70 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition duration-200">
+    </div>
+    <button type="submit"
+            :disabled="!isAuthenticated"
+            class="w-full py-3 border-2 border-dashed border-white rounded-lg text-center text-sm font-inter font-semibold text-white hover:bg-white/20 hover:border-white transition duration-200"
+            :class="{ 'opacity-50 cursor-not-allowed': !isAuthenticated }">
+        + Add Project
+    </button>
+    <div v-if="!isAuthenticated" class="mt-2 text-red-500 font-semibold text-center">
+        You must be connected to use this feature.
+    </div>
+</form>
+
+
             <ul class="space-y-4">
                 <li v-for="project in localProjects" :key="project.id" class="bg-white/5 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
@@ -77,9 +85,14 @@ export default {
     },
     settings: {
       type: Object,
+    },
+    isAuthenticated: {
+      type: Number,
+      default: 0
     }
   },
   setup(props) {
+    console.log('Is authenticated:', props.isAuthenticated);
     const localProjects = ref([...props.projects]); // Use a deep copy of projects
     const newProjectName = ref('');
     const newTaskNames = reactive({});
