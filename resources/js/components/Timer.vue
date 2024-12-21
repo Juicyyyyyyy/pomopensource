@@ -192,7 +192,7 @@ export default {
 
         const playAlarmSound = () => {
             if (props.settings.sound.settings.play_sound) {
-                const soundFile = `${props.settings.sound.settings.alert_sound}.mp3`;
+                const soundFile = `${props.settings.sound.settings.alert_sound.toLowerCase()}.mp3`;
                 audio.value = new Audio(`/sounds/${soundFile}`);
                 audio.value.play().catch(error => {
                     console.error('Error playing sound:', error);

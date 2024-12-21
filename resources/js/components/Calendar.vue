@@ -245,7 +245,7 @@ export default {
 
         onMounted(fetchCalendarData);
 
-        watch(currentView, fetchCalendarData);
+       watch([currentDate, currentView], fetchCalendarData);
 
         return {
             currentDate,
