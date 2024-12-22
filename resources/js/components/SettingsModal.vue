@@ -37,10 +37,17 @@
                                 <option v-for="option in setting.options" :key="option" :value="option" class="text-black">{{ option }}</option>
                             </select>
 
-                            <div v-else-if="setting.type === 'checkbox'" class="mt-1 flex items-center">
-                                <input type="checkbox" v-model="setting.value" :id="setting.key" class="toggle-input">
-                                <label :for="setting.key" class="ml-2 text-white/70 cursor-pointer">{{ setting.name }}</label>
-                            </div>
+
+<div v-else-if="setting.type === 'checkbox'" class="mt-1 flex items-center">
+    <input
+        type="checkbox"
+        :checked="setting.value === '1' || setting.value === 1 || setting.value === true"
+        @change="setting.value = $event.target.checked ? 1 : 0"
+        :id="setting.key"
+        class="toggle-input"
+    >
+    <label :for="setting.key" class="ml-2 text-white/70 cursor-pointer">{{ setting.name }}</label>
+</div>
 
                             <div v-else-if="setting.type === 'number'" class="mt-1 flex flex-wrap gap-4 ">
                                 <input type="number" v-model="setting.value" :id="setting.key"

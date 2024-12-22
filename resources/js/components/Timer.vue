@@ -76,6 +76,8 @@ export default {
     setup(props) {
         const time = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
         const initialTime = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
+        const alertVolume = ref(props.settings?.sound?.settings?.alertVolume ?? 50);
+        const playSound = ref(props.settings?.sound?.settings?.play_sound ?? "0");
         const isRunning = ref(false);
         const timerInterval = ref(null);
         const selectedTaskId = ref('');
@@ -83,6 +85,25 @@ export default {
         const sessionStartTime = ref(null);
         const currentTimerType = ref('pomodoro');
         const audio = ref(null);
+
+
+        watch(
+            () => props.settings?.sound?.settings?.alertVolume,
+            (newVolume, oldVolume) => {
+                console.log(`Alert volume changed from ${oldVolume} to ${newVolume}`);
+            }
+        );
+
+
+        watch(
+            () => props.settings?.sound?.settings?.play_sound,
+            (newValue, oldValue) => {
+                console.log(`playSound changed from ${oldValue} to ${newValue}`);
+                playSound.value = newValue;
+            },
+            { immediate: true }
+        );
+
 
         const formattedTime = computed(() => {
             const min = Math.floor(time.value / 60);
@@ -123,7 +144,11 @@ export default {
                 if (time.value <= 0) {
                     clearInterval(timerInterval.value);
                     isRunning.value = false;
+
+                if (playSound.value === "1")
+                {
                     playAlarmSound();
+                }
                     if (currentTimerType.value === 'pomodoro') {
                         endSession();
                     }
@@ -191,14 +216,17 @@ export default {
         };
 
         const playAlarmSound = () => {
-            if (props.settings.sound.settings.play_sound) {
-                const soundFile = `${props.settings.sound.settings.alert_sound.toLowerCase()}.mp3`;
-                audio.value = new Audio(`/sounds/${soundFile}`);
-                audio.value.play().catch(error => {
-                    console.error('Error playing sound:', error);
-                });
-            }
-        };
+            const soundFile = `${props.settings.sound.settings.alert_sound.toLowerCase()}.mp3`;
+            audio.value = new Audio(`/sounds/${soundFile}`);
+
+            const volume = Math.min(Math.max(parseInt(alertVolume.value) / 100, 0), 1);
+            audio.value.volume = volume;
+
+            audio.value.play().catch(error => {
+                console.error('Error playing sound:', error);
+            });
+    };
+
 
         function extractAfterFirstUnderscore(str) {
             const index = str.indexOf('_');

@@ -92,7 +92,6 @@ export default {
     }
   },
   setup(props) {
-    console.log('Is authenticated:', props.isAuthenticated);
     const localProjects = ref([...props.projects]); // Use a deep copy of projects
     const newProjectName = ref('');
     const newTaskNames = reactive({});
