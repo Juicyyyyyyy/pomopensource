@@ -76,7 +76,7 @@ export default {
     setup(props) {
         const time = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
         const initialTime = ref((props.settings?.timers?.settings?.pomodoro_duration ?? 25) * 60);
-        const alertVolume = ref(props.settings?.sound?.settings?.alertVolume ?? 50);
+        const alertVolume = ref(props.settings?.sound?.settings?.alert_volume ?? 50);
         const playSound = ref(props.settings?.sound?.settings?.play_sound ?? "0");
         const isRunning = ref(false);
         const timerInterval = ref(null);
@@ -86,14 +86,12 @@ export default {
         const currentTimerType = ref('pomodoro');
         const audio = ref(null);
 
-
         watch(
-            () => props.settings?.sound?.settings?.alertVolume,
+            () => props.settings?.sound?.settings?.alert_volume,
             (newVolume, oldVolume) => {
-                console.log(`Alert volume changed from ${oldVolume} to ${newVolume}`);
-            }
+                alertVolume.value = newVolume;
+            },
         );
-
 
         watch(
             () => props.settings?.sound?.settings?.play_sound,
@@ -101,7 +99,6 @@ export default {
                 console.log(`playSound changed from ${oldValue} to ${newValue}`);
                 playSound.value = newValue;
             },
-            { immediate: true }
         );
 
 
