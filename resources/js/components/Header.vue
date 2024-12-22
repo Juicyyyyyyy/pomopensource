@@ -4,7 +4,7 @@
             <img
                 src="/images/logo.png"
                 alt="Pomopensource Logo"
-                class="h-54" />
+                class="h-20" />
         </div>
         <div class="flex space-x-3">
             <button @click="$emit('toggleStats')" class="flex items-center space-x-1 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20">
