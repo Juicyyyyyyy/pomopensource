@@ -6,6 +6,7 @@
                 id="default-timer"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'pomodoro' }"
+                :disabled="isRunning && currentTimerType === 'pomodoro'"
             >
                 pomodoro
             </button>
@@ -13,6 +14,7 @@
                 @click="setTimer('short_break', settings.timers.settings.short_break_duration)"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'short_break' }"
+                :disabled="isRunning && currentTimerType === 'pomodoro'"
             >
                 short break
             </button>
@@ -20,6 +22,7 @@
                 @click="setTimer('long_break', settings.timers.settings.long_break_duration)"
                 class="timer-button"
                 :class="{ 'active-button': currentTimerType === 'long_break' }"
+                :disabled="isRunning && currentTimerType === 'pomodoro'"
             >
                 long break
             </button>
