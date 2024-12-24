@@ -92,6 +92,7 @@ export default {
     }
   },
   setup(props) {
+    const isAuthChecked = ref(false);
     const localProjects = ref([...props.projects]); // Use a deep copy of projects
     const newProjectName = ref('');
     const newTaskNames = reactive({});

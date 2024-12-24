@@ -1,31 +1,42 @@
 <template>
-    <header class="flex justify-between items-center py-6 px-24 mb-16">
+    <header class="flex justify-between items-center py-6 px-6 md:px-24 mb-16">
         <div class="flex items-center space-x-2">
+            <!-- Logo -->
             <img
                 src="/images/logo.png"
                 alt="Pomopensource Logo"
-                class="h-20" />
+                class="h-16 md:h-20" />
         </div>
         <div class="flex space-x-3">
+            <!-- Stats Button -->
             <button @click="$emit('toggleStats')" class="flex items-center space-x-1 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20">
                 <i class="fa-solid fa-chart-simple"></i>
-                <span class="text-sm font-inter">Stats</span>
+                <span class="hidden md:inline-block text-sm font-inter">Stats</span>
             </button>
+            <!-- Settings Button -->
             <button @click="$emit('toggleSettings')" class="flex items-center space-x-1 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20">
                 <i class="fas fa-cog w-4 h-4"></i>
-                <span class="text-sm font-inter">Settings</span>
+                <span class="hidden md:inline-block text-sm font-inter">Settings</span>
             </button>
-            <a v-if="!auth" class="py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20" href="register">
+            <!-- Login/Logout Buttons -->
+            <a
+                v-if="!auth"
+                class="flex items-center py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20"
+                href="register">
                 <i class="fas fa-user w-6 h-6"></i>
-                <span class="text-sm font-inter">Login</span>
+                <span class="hidden md:inline-block text-sm font-inter">Login</span>
             </a>
-            <a v-if="auth" @click.prevent="logout" class="py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20 cursor-pointer">
+            <a
+                v-if="auth"
+                @click.prevent="logout"
+                class="flex items-center py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20 cursor-pointer">
                 <i class="fas fa-sign-out-alt w-6 h-6"></i>
-                <span class="text-sm font-inter">Logout</span>
+                <span class="hidden md:inline-block text-sm font-inter">Logout</span>
             </a>
         </div>
     </header>
 </template>
+
 
 <script>
 import axios from 'axios';
