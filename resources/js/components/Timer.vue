@@ -300,6 +300,11 @@ export default {
         return;
       }
 
+      if (storedData)
+        {
+            endSession();
+        }
+
       const { isRunning: storedIsRunning, endTime, currentTimerType: storedTimerType } =
         JSON.parse(storedData);
 
