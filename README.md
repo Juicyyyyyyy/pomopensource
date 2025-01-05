@@ -22,7 +22,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![project_license][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -30,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Juicyyyyyyy/pomopensource">
-    <img src="public/favicon-32x32.png" alt="Logo" width="80" height="80">
+    <img src="public/images/readme/pomodoro-technique.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Pomopensource</h3>
@@ -215,7 +214,7 @@ Project Link: [https://github.com/Juicyyyyyyy/pomopensource](https://github.com/
 [issues-shield]: https://img.shields.io/github/issues/Juicyyyyyyy/pomopensource.svg?style=for-the-badge
 [issues-url]: https://github.com/Juicyyyyyyy/pomopensource/issues
 [license-shield]: https://img.shields.io/github/license/Juicyyyyyyy/pomopensource.svg?style=for-the-badge
-[license-url]: https://github.com/Juicyyyyyyy/pomopensource/blob/master/LICENSE.txt
+[license-url]: https://github.com/Juicyyyyyyy/pomopensource/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
