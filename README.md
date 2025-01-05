@@ -103,11 +103,9 @@ Pomopopensource is a cute, minimalist, customizable webapp providing statistics 
     - Activate/desactivate alert sound, change sound, manage sound
 
 - **Projects:**
-- Organize your work with projects and subprojects:
   - Add and manage projects and subprojects to track your focus areas
   - Get detailed report summaries showing the time spent on each project and subproject
   - If no projects are created, all work hours will be categorized as "General Focus"
-
 
 - **Stats:**
   - **Activity Summary**:
