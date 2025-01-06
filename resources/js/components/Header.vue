@@ -18,20 +18,24 @@
                 <i class="fas fa-cog w-4 h-4"></i>
                 <span class="hidden md:inline-block text-sm font-inter">Settings</span>
             </button>
-            <!-- Login/Logout Buttons -->
+            <!-- Login Button (when not authenticated) -->
             <a
-                v-if="!auth"
-                class="flex items-center py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20"
-                href="register">
-                <i class="fas fa-user w-6 h-6"></i>
-                <span class="hidden md:inline-block text-sm font-inter">Login</span>
+              v-if="!auth"
+              class="flex items-center space-x-2 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20"
+              href="register"
+            >
+              <i class="fas fa-user w-4 h-4"></i>
+              <span class="hidden md:inline-block text-sm font-inter">Login</span>
             </a>
+
+            <!-- Logout Button (when authenticated) -->
             <a
-                v-if="auth"
-                @click.prevent="logout"
-                class="flex items-center py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20 cursor-pointer">
-                <i class="fas fa-sign-out-alt w-6 h-6"></i>
-                <span class="hidden md:inline-block text-sm font-inter">Logout</span>
+              v-if="auth"
+              @click.prevent="logout"
+              class="flex items-center space-x-2 py-2 px-3 bg-white/10 text-white rounded-full hover:bg-white/20 cursor-pointer"
+            >
+              <i class="fas fa-sign-out-alt w-4 h-4"></i>
+              <span class="hidden md:inline-block text-sm font-inter">Logout</span>
             </a>
         </div>
     </header>
