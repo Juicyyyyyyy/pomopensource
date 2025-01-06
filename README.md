@@ -76,18 +76,18 @@
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="pomopensource.com"><img src="/public/images/readme/home.png" alt="Home" width="100%"></a>
+      <a href="/public/images/readme/home.png"><img src="/public/images/readme/home.png" alt="Home" width="100%"></a>
     </td>
     <td align="center" width="50%">
-      <a href="pomopensource.com"><img src="/public/images/readme/calendar.png" alt="Calendar" width="100%"></a>
+      <a href="/public/images/readme/calendar.png"><img src="/public/images/readme/calendar.png" alt="Calendar" width="100%"></a>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <a href="pomopensource.com"><img src="/public/images/readme/settings.png" alt="Settings" width="100%"></a>
+      <a href="/public/images/readme/settings.png"><img src="/public/images/readme/settings.png" alt="Settings" width="100%"></a>
     </td>
     <td align="center" width="50%">
-      <a href="pomopensource.com"><img src="/public/images/readme/activity.png" alt="Activity" width="100%"></a>
+      <a href="/public/images/readme/activity.png"><img src="/public/images/readme/activity.png" alt="Activity" width="100%"></a>
     </td>
   </tr>
 </table>
